@@ -1,23 +1,11 @@
 /**
- * Extract text from various document formats
+ * Extract plain text from uploaded documents (PDF, DOCX, DOC, TXT)
+ * Server-only: uses pdf-parse and mammoth
  */
 
-import { processPDFFromBuffer } from "@/services/ingestion/pdf_processor";
-
-const SUPPORTED_EXTENSIONS = [".pdf", ".txt", ".docx", ".doc"];
-const ACCEPTED_TYPES = [
-  "application/pdf",
-  "text/plain",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/msword",
-];
-
-export function isSupportedFile(file: File): boolean {
-  const ext = "." + (file.name.split(".").pop() ?? "").toLowerCase();
-  return SUPPORTED_EXTENSIONS.includes(ext) || ACCEPTED_TYPES.includes(file.type);
-}
-
-export async function extractTextFromFile(file: File): Promise<{ text: string; error?: string }> {
+export async function extractTextFromFile(
+  file: File
+): Promise<{ text: string; error?: string }> {
   const ext = "." + (file.name.split(".").pop() ?? "").toLowerCase();
 
   if (ext === ".txt") {
@@ -26,16 +14,35 @@ export async function extractTextFromFile(file: File): Promise<{ text: string; e
   }
 
   if (ext === ".pdf") {
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const result = await processPDFFromBuffer(buffer, file.name);
-    return { text: result.fullText };
+    try {
+      const pdfParse = (await import("pdf-parse")).default;
+      const buffer = await file.arrayBuffer();
+      const data = await pdfParse(Buffer.from(buffer));
+      return { text: (data.text || "").trim() };
+    } catch (err) {
+      return {
+        text: "",
+        error: err instanceof Error ? err.message : "PDF extraction failed",
+      };
+    }
   }
 
   if (ext === ".docx" || ext === ".doc") {
-    const mammoth = (await import("mammoth")).default;
-    const buffer = await file.arrayBuffer();
-    const result = await mammoth.extractRawText({ buffer });
-    return { text: result.value.trim(), error: result.messages.length ? result.messages[0]?.message : undefined };
+    try {
+      const mammoth = (await import("mammoth")).default;
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const result = await mammoth.extractRawText({ buffer });
+      return {
+        text: result.value.trim(),
+        error: result.messages.length ? result.messages[0]?.message : undefined,
+      };
+    } catch (err) {
+      return {
+        text: "",
+        error: err instanceof Error ? err.message : "Word extraction failed",
+      };
+    }
   }
 
   return { text: "", error: `Unsupported format: ${ext}` };

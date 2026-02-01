@@ -1,53 +1,37 @@
-# FDA Whisperer
+# Pharma PreAuditor Precedent Engine (FDA Whisperer)
 
-Vertical AI agent for Bio-Pharma Regulatory Intelligence. Predicts regulatory roadblocks by analyzing SBAs (Summary Basis of Approvals) and EPARs.
-
-## Setup
-
-### 1. Install dependencies
-
-```bash
-npm install
-```
-
-### 2. Environment variables
-
-Copy `.env.example` to `.env.local` and fill in:
-
-- `NEXT_PUBLIC_SUPABASE_URL` – Supabase project URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` – Supabase anon key
-- `OPENAI_API_KEY` – OpenAI API key (for embeddings + LLM summary)
-
-### 3. Apply database schema
-
-In Supabase Dashboard → SQL Editor, run the contents of `db_schema.sql` (or `supabase/migrations/db_schema.sql`).
-
-### 4. Ingest PDFs (optional)
-
-Place FDA SBAs and EMA EPARs in `data/pdfs/`, then:
-
-```bash
-npm run ingest
-# or: npm run ingest /path/to/your/pdfs
-```
-
-### 5. Local FDA Guidance (optional)
-
-Place FDA Guidance PDFs in `docs/` for @docs-style context in predictive audits.
-
-## Run
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
+Your AI regulatory intelligence assistant — chat in real time, attach documents, and get critical analysis on FDA approval likelihood and clinical development.
 
 ## Features
 
-- **Multi-Angle Search**:
-  - **Angle A**: Safety signals in similar drug classes
-  - **Angle B**: Reviewer stickler points (PK/PD modeling FDA dislikes)
-  - **Angle C**: EMA EPAR safety warnings FDA might adopt
-- **Red/Yellow/Green** risk framework based on precedent strength
-- **PDF Processor** – extracts text, detects tables, and RTF keywords
+- **Conversational AI** — Chat naturally; ask follow-ups and get contextual answers
+- **Document analysis** — Drag & drop or attach PDF, Word (.docx, .doc), or text files
+- **Real-time streaming** — Responses stream as they’re generated
+- **Critical thinking** — Step-by-step reasoning, FDA precedent, therapeutic area trends, approval factors, and risks
+
+## Setup
+
+1. Clone the repo and install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Copy `.env.example` to `.env.local` and add your API key:
+   ```bash
+   cp .env.example .env.local
+   ```
+   - **Gemini (free):** Get a key at [Google AI Studio](https://aistudio.google.com/apikey) and set `GEMINI_API_KEY=`
+   - **OpenAI (optional):** Set `OPENAI_API_KEY=` if you prefer OpenAI
+
+3. Run the dev server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000)
+
+## Tech Stack
+
+- Next.js 14 (App Router)
+- Tailwind CSS
+- Gemini 2.0 Flash / OpenAI GPT-4o-mini
