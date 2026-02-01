@@ -1,0 +1,39 @@
+{
+  "name": "fda-whisperer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "ingest": "tsx services/ingestion/run-ingestion.ts",
+    "process-pdf": "tsx services/ingestion/pdf_processor.ts"
+  },
+  "dependencies": {
+    "next": "14.2.35",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@supabase/supabase-js": "^2.47.0",
+    "@supabase/ssr": "^0.5.2",
+    "@langchain/openai": "^0.3.0",
+    "@langchain/community": "^0.3.0",
+    "langchain": "^0.3.0",
+    "pdf-parse": "^1.1.1",
+    "mammoth": "^1.8.0",
+    "openai": "^4.77.0",
+    "@google/generative-ai": "^0.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/pdf-parse": "^1.1.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.6.3",
+    "tsx": "^4.19.0"
+  }
+}
